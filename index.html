@@ -3,158 +3,230 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Je me questionne sur le fonctionnement de l'IA…</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Je me questionne sur l'IA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .page {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #4a4a4a;
+        }
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+        .bouton {
+            background-color: #6c5ce7;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s;
+        }
+        .bouton:hover {
+            background-color: #5649c0;
+        }
+        .bouton-choix {
+            background-color: #a29bfe;
+            color: #333;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .bouton-choix:hover {
+            background-color: #8a82e8;
+        }
+        .grille {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 10px;
+            margin: 20px auto;
+            max-width: 600px;
+        }
+        .sphere {
+            width: 50px;
+            height: 50px;
+            background-color: #6c5ce7;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .sphere:hover {
+            transform: scale(1.1);
+        }
+        .sphere.clicked {
+            background-color: #2ecc71;
+        }
+        .sphere.garcon {
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAOxAAADsQBlSsOGwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAANCSURBVHic7Z1BayNBFMaf9X22pYqDQbLgBjQwMDA8mDpQb2B9oB9oB+YB94D9gD3gD3gD3gD3gD3gD3gD3gD3gD3gD3gD3gD3A3v8B1YG9gYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYH9wF1YG9gYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGB8zD1YG9gYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYH8zD1YG9gYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYH8zD1YG9gYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYH8zD1YAAAAASUVORK5CYII=');
+            background-size: cover;
+            color: transparent;
+        }
+        .sphere.fille {
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAOxAAADsQBlSsOGwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAJASURBVHic7Z1BayNBGMaf9X22pYqDQbLgBjQwMDA8mDpQb2B9oB9oB+YB94D9gD3gD3gD3gD3gD3gD3gD3gD3gD3gD3gD3gD3A3v8B1YG9gYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYH9wF1YG9gYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGB8zD1YG9gYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYH8zD1YG9gYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYH8zD1YG9gYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYH8zD1YAAAAASUVORK5CYII=');
+            background-size: cover;
+            color: transparent;
+        }
+        .choix {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <!-- Page d'accueil -->
     <div id="accueil" class="page">
-        <h1>Je me questionne sur le fonctionnement de l'IA et de l’apprentissage automatique (machine learning)…</h1>
+        <h1>Je me questionne sur le fonctionnement de l'IA…</h1>
         <p>D’après le travail de Biljana Petreska</p>
-        <button id="btn-decouvrir" class="bouton">Je découvre...</button>
+        <button class="bouton" onclick="showPage('introduction')">C’est parti</button>
     </div>
 
     <!-- Page 1 : Introduction -->
-    <div id="introduction" class="page" style="display: none;">
+    <div id="introduction" class="page hidden">
         <h2>Définition des biais</h2>
-        <p>Cliquez sur <strong>2 sphères</strong> de votre choix pour découvrir qui se trouve derrière...</p>
-        <div id="grille-spheres" class="grille"></div>
-        <button id="btn-suite-intro" class="bouton" style="display: none;">Suite</button>
+        <p>Cliquez sur <strong>2 sphères</strong> de votre choix pour découvrir ce qui se trouve derrière.</p>
+        <div id="grille" class="grille"></div>
+        <button id="btnSuiteIntro" class="bouton hidden" onclick="showPage('premiere-interaction')">Suite</button>
     </div>
 
     <!-- Page 2 : Première interaction -->
-    <div id="premiere-interaction" class="page" style="display: none;">
+    <div id="premiere-interaction" class="page hidden">
         <p>Merci !</p>
         <p>Maintenant, imaginez que VOUS êtes l'algorithme de prédiction.</p>
         <p>Votre but est de trouver si derrière toutes ces sphères il y a plus de filles ou plus de garçons.</p>
         <p>Cliquez donc sur <strong>8 autres sphères</strong>.</p>
-        <div id="grille-spheres-2" class="grille"></div>
-        <button id="btn-suite-interaction" class="bouton" style="display: none;">Suite</button>
+        <div id="grille2" class="grille"></div>
+        <button id="btnSuiteInteraction" class="bouton hidden" onclick="showPage('deuxieme-interaction')">Suite</button>
     </div>
 
     <!-- Page 3 : Deuxième interaction -->
-    <div id="deuxieme-interaction" class="page" style="display: none;">
+    <div id="deuxieme-interaction" class="page hidden">
         <p>C'est fait !</p>
         <p>Aujourd’hui, l'algorithme de prédiction, c’est vous ! Alors, d’après vos propres observations, il y a plus de :</p>
         <div class="choix">
-            <button id="btn-garcons" class="bouton-choix">Garçons</button>
-            <button id="btn-filles" class="bouton-choix">Filles</button>
+            <button class="bouton-choix" onclick="checkAnswer('garcons')">Garçons</button>
+            <button class="bouton-choix" onclick="checkAnswer('filles')">Filles</button>
         </div>
     </div>
 
-    <!-- Page 4 : Résultat incorrect -->
-    <div id="resultat-incorrect" class="page" style="display: none;">
-        <p>Vous avez choisi les filles. Pourtant, à l'écran il y a plus de garçons.</p>
-        <p>Essayez encore...</p>
-        <button id="btn-reessayer" class="bouton">Réessayer</button>
-    </div>
-
-    <!-- Page 5 : Résultat correct -->
-    <div id="resultat-correct" class="page" style="display: none;">
-        <p>Correct !</p>
+    <!-- Page 4 : Résultat -->
+    <div id="resultat" class="page hidden">
+        <p id="resultat-texte"></p>
         <p>Les algorithmes d’intelligence artificielle apprennent en observant des données. Après avoir observé beaucoup de données, ces algorithmes peuvent prédire s’il va faire beau ou s’il va pleuvoir, s’il vaut mieux prendre le bus ou le train, s’il faut regarder la série A ou la série B…</p>
-        <button id="btn-je-vois" class="bouton">JE VOIS</button>
+        <button class="bouton" onclick="showPage('fin')">JE VOIS</button>
     </div>
 
-    <!-- Page 6 : Explication biais des données -->
-    <div id="explication-biais" class="page" style="display: none;">
-        <p>Comme il est impossible de tout observer, l'algorithme prend des décisions basées sur des données qui sont une représentation imparfaite de la réalité.</p>
-        <p>En règle générale, plus l'algorithme observe des données, meilleures seront ses prédictions.</p>
-        <p>Mais encore...</p>
-        <button id="btn-je-vois-2" class="bouton">Je vois</button>
+    <!-- Page 5 : Fin -->
+    <div id="fin" class="page hidden">
+        <h1>Découvrez les biais de l'IA avec un jeu</h1>
+        <p>Une manière ludique de comprendre l'intelligence artificielle et les bulles de filtre.</p>
+        <p>Simplifié et inspiré pour les élèves du travail de <strong>BILJANA PETRESKA VON RITTER</strong>.</p>
     </div>
 
-    <!-- Page 7 : Explication comptage -->
-    <div id="explication-comptage" class="page" style="display: none;">
-        <p>Les algorithmes d'intelligence artificielle apprennent en observant des données.</p>
-        <p>Après avoir observé beaucoup de données, ces algorithmes peuvent prédire s'il va faire beau ou s'il va pleuvoir, s'il vaut mieux prendre le bus ou le train, s'il faut regarder la série A ou plutôt la série B...</p>
-        <p>Les algorithmes d'intelligence artificielle ne réfléchissent pas, ils ne font que compter.</p>
-        <p>Ils observent beaucoup de données, puis font des prédictions qui font sens par rapport aux données qu'ils ont observées.</p>
-        <button id="btn-jai-compris" class="bouton">J'ai compris</button>
-    </div>
+    <script>
+        // Configuration
+        const totalSpheres = 50;
+        const totalGarcons = 30;
+        const totalFilles = 20;
+        let spheresRevealed = 0;
+        let currentStep = 0;
 
-    <!-- Page 8 : Suite -->
-    <div id="suite" class="page" style="display: none;">
-        <p>Voici un exemple.</p>
-        <p>Pour arriver à compléter vos phrases, l'algorithme observe un très grand nombre de phrases et en compte les mots.</p>
-        <p>L'algorithme vous proposera ensuite les mots les plus fréquents dans des phrases similaires à votre phrase.</p>
-        <p>Instruction : Continuons l'observation. Cliquez sur <strong>10 autres sphères</strong>.</p>
-        <div id="grille-spheres-3" class="grille"></div>
-        <button id="btn-suite-3" class="bouton" style="display: none;">Suite</button>
-    </div>
+        // Générer une grille de sphères
+        function generateGrille(grilleId, count) {
+            const grille = document.getElementById(grilleId);
+            grille.innerHTML = '';
+            
+            for (let i = 0; i < count; i++) {
+                const sphere = document.createElement('div');
+                sphere.className = 'sphere';
+                sphere.textContent = '?';
+                sphere.dataset.index = i;
+                sphere.dataset.type = i < totalGarcons ? 'garcon' : 'fille';
+                sphere.onclick = () => revealSphere(sphere, grilleId);
+                grille.appendChild(sphere);
+            }
+        }
 
-    <!-- Page 9 : Résultat après 10 clics -->
-    <div id="resultat-10-clics" class="page" style="display: none;">
-        <p>Qu'est-ce que ces observations vous permettent de conclure ?</p>
-        <p>Quelle prédiction un algorithme ferait-il : y a-t-il plus de filles ou plus de garçons qui se cachent derrière tous les points d'interrogation ?</p>
-        <div class="choix">
-            <button id="btn-filles-2" class="bouton-choix">Filles</button>
-            <button id="btn-garcons-2" class="bouton-choix">Garçons</button>
-        </div>
-    </div>
+        // Révéler une sphère
+        function revealSphere(sphere, grilleId) {
+            if (sphere.classList.contains('clicked')) return;
+            
+            sphere.classList.add('clicked');
+            sphere.classList.add(sphere.dataset.type);
+            spheresRevealed++;
 
-    <!-- Page 10 : Révélation finale -->
-    <div id="revelation-finale" class="page" style="display: none;">
-        <p>En fait, il y a exactement le même nombre de filles et de garçons.</p>
-        <p>Mais, selon les données que l'on observe, nous pouvons être induits en erreur.</p>
-        <p>Vous venez de voir ce que l'on appelle le <strong>BIAIS DES DONNÉES</strong>.</p>
-        <button id="btn-ah-oui" class="bouton">Ah oui ?</button>
-    </div>
+            // Logique pour les étapes
+            if (currentStep === 0 && spheresRevealed === 2) {
+                document.getElementById('btnSuiteIntro').classList.remove('hidden');
+            } else if (currentStep === 1 && spheresRevealed === 10) {
+                document.getElementById('btnSuiteInteraction').classList.remove('hidden');
+            }
+        }
 
-    <!-- Page 11 : Explication biais sociétal -->
-    <div id="explication-biais-societal" class="page" style="display: none;">
-        <p>Nous avons la chance d'avoir plus de données.</p>
-        <p>Chaque personne affiche sa couleur préférée dans son profil de réseau social.</p>
-        <p>Vous êtes invités à dîner par une fille.</p>
-        <p>Est-ce mieux de lui offrir un vêtement vert ou un vêtement violet ?</p>
-        <div class="choix">
-            <button id="btn-vert" class="bouton-choix">Un vêtement vert</button>
-            <button id="btn-violet" class="bouton-choix">Un vêtement violet</button>
-        </div>
-    </div>
+        // Vérifier la réponse
+        function checkAnswer(choice) {
+            if (choice === 'filles') {
+                document.getElementById('resultat-texte').textContent = 'Correct !';
+            } else {
+                document.getElementById('resultat-texte').textContent = 'Recommence.';
+            }
+            showPage('resultat');
+        }
 
-    <!-- Page 12 : Résultat biais sociétal -->
-    <div id="resultat-biais-societal" class="page" style="display: none;">
-        <p>Aïe, aïe, aïe !</p>
-        <p>Cette fille fait partie d'une minorité de filles qui détestent les vêtements violets !</p>
-        <p>C'est le <strong>BIAIS SOCIÉTAL</strong> : les données reproduisent tous les biais et préjugés de notre société.</p>
-        <button id="btn-ah-oui-2" class="bouton">Ah oui ?</button>
-    </div>
+        // Afficher une page
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.add('hidden');
+            });
+            document.getElementById(pageId).classList.remove('hidden');
+            
+            // Réinitialiser les grilles si nécessaire
+            if (pageId === 'introduction') {
+                currentStep = 0;
+                spheresRevealed = 0;
+                generateGrille('grille', totalSpheres);
+            } else if (pageId === 'premiere-interaction') {
+                currentStep = 1;
+                spheresRevealed = 0;
+                generateGrille('grille2', totalSpheres);
+            }
+        }
 
-    <!-- Page 13 : Exemples réels -->
-    <div id="exemples-reels" class="page" style="display: none;">
-        <p>De la même façon, les intelligences artificielles, même si elles ont observé énormément de données, se trompent aussi.</p>
-        <p>De cette manière, certains algorithmes de Facebook, Google, Microsoft sont accusés de racismes ou de sexisme.</p>
-        <button id="btn-suite-exemples" class="bouton">Suite</button>
-    </div>
-
-    <!-- Page 14 : Solutions contre les biais -->
-    <div id="solutions-biais" class="page" style="display: none;">
-        <p>Pour contrer le BIAIS des données, les chercheurs font attention à récolter un maximum de données et par exemple des données de toutes les minorités pour éviter des stéréotypes et du racisme.</p>
-        <p>Pour contrer le BIAIS sociétal, les chercheurs peuvent aussi créer des fausses données pour compenser les différences liées au sexisme.</p>
-        <button id="btn-que-puis-je-faire" class="bouton">Que puis-je faire ?</button>
-    </div>
-
-    <!-- Page 15 : Conclusion -->
-    <div id="conclusion" class="page" style="display: none;">
-        <p>Il est impossible de supprimer tous les biais !</p>
-        <p>Il faut donc être critique face aux résultats que nous donnent les algorithmes.</p>
-        <button id="btn-pourquoi" class="bouton">Pourquoi ?</button>
-    </div>
-
-    <!-- Page 16 : Bulles de filtres -->
-    <div id="bulles-filtres" class="page" style="display: none;">
-        <p>Les réseaux sociaux nous suggèrent des personnes qui ont les mêmes préférences et les mêmes opinions que nous.</p>
-        <p>Ils nous enferment dans une <strong>bulle de filtre</strong> : une vision du monde qui cache les opinions et préférences différentes des nôtres.</p>
-        <button id="btn-mince" class="bouton">Mince</button>
-    </div>
-
-    <!-- Page 17 : Fin -->
-    <div id="fin" class="page" style="display: none;">
-        <p>Découvrez les biais de l'IA avec un jeu. Une manière ludique de comprendre l'intelligence artificielle et les bulles de filtre.</p>
-        <p>Simplifié et inspiré pour les élèves du travail de <strong>BILJANA PETRESKA VON RITTER</strong> et le jeu "Crowds" de NICKY CASE.</p>
-    </div>
-
-    <script src="script.js"></script>
+        // Initialisation
+        window.onload = function() {
+            generateGrille('grille', totalSpheres);
+            generateGrille('grille2', totalSpheres);
+        };
+    </script>
 </body>
 </html>
