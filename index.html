@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Je me questionne sur le fonctionnement de l’IA…</title>
+  <style>
+    :root{
+      --bg:#f7f7fb;
+      --card:#ffffff;
+      --txt:#1f2430;
+      --violet:#7a3cff;
+      --green:#1eb980;
+      --soft:#e9e9f7
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial,Helvetica,sans-serif;
+      background:linear-gradient(180deg,#f7f7fb,#eef2ff);
+      color:var(--txt)
+    }
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:24px
+    }
+    .card{
+      background:var(--card);
+      border-radius:20px;
+      padding:24px;
+      box-shadow:0 10px 30px rgba(34,40,65,.08);
+      margin:16px 0
+    }
+    h1,h2{margin:0 0 12px}
+    p{line-height:1.5}
+    button{
+      border:0;
+      border-radius:999px;
+      padding:14px 20px;
+      background:#111827;
+      color:#fff;
+      font-weight:700;
+      cursor:pointer;
+      margin:8px 8px 0 0
+    }
+    button.secondary{
+      background:var(--soft);
+      color:#111827
+    }
+    button.choice{
+      min-width:180px
+    }
+    .hidden{display:none !important}
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(10,1fr);
+      gap:10px;
+      margin-top:18px
+    }
+    .sphere{
+      aspect-ratio:1/1;
+      border-radius:999px;
+      background:radial-gradient(circle at 30% 30%,#fff,#d7dbef);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:28px;
+      font-weight:700;
+      cursor:pointer;
+      user-select:none;
+      position:relative;
+      overflow:hidden
+    }
+    .sphere.revealed{
+      background:#fff
+    }
+    .portrait{
+      width:100%;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:44px
+    }
+    .male{background:rgba(30,185,128,.18)}
+    .female{background:rgba(122,60,255,.18)}
+    .tag{
+      position:absolute;
+      right:6px;
+      top:6px;
+      width:16px;
+      height:16px;
+      border-radius:50%
+    }
+    .male .tag{background:var(--green)}
+    .female .tag{background:var(--violet)}
+    .tiny{font-size:14px;color:#586174}
+    .row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Écran 1 : Titre principal -->
+  <div id="screen1" class="card">
+    <h1>Je me questionne sur le fonctionnement de l’IA et de l’apprentissage automatique (machine learning)…</h1>
+    <p><strong>D’après le travail de Biljana Petreska von Ritter.</strong></p>
+    <button onclick="show('screen2')">Je découvre...</button>
+  </div>
+
+  <!-- Écran 2 : première interaction 2 sphères -->
+  <div id="screen2" class="card hidden">
+    <h2>Définition des biais</h2>
+    <p>Cliquez sur <strong>2 sphères</strong> de votre choix pour découvrir qui se trouve derrière...</p>
+    <div id="grid" class="grid"></div>
+    <div class="row"><button class="secondary" onclick="step2()">Suite</button></div>
+    <p id="msg2" class="tiny"></p>
+  </div>
+
+  <!-- Écran 3 : suite, imaginez l’algorithme -->
+  <div id="screen3" class="card hidden">
+    <h2>Première observation</h2>
+    <p>Merci !
+       Maintenant, imaginez que <strong>vous</strong> êtes l'algorithme de prédiction.
+       Votre but est de trouver si derrière toutes ces sphères il y a plus de filles ou plus de garçons.
+       Cliquez donc sur 8 autres sphères.</p>
+    <button onclick="step3()">Continuer</button>
+  </div>
+
+  <!-- Écran 4 : prédiction 1 -->
+  <div id="screen4" class="card hidden">
+    <h2>Prédiction</h2>
+    <p>Voici ce que vous avez observé.
+       Aujourd’hui, l'algorithme de prédiction, c’est vous !
+       Alors, d’après vos propres observations, il y a plus de :</p>
+    <div class="row">
+      <button class="choice" onclick="predict('garcons')">Garçons</button>
+      <button class="choice" onclick="predict('filles')">Filles</button>
+    </div>
+    <p id="predmsg" class="tiny"></p>
+  </div>
+
+  <!-- Écran 5 : biais des données -->
+  <div id="screen5" class="card hidden">
+    <h2>Biais des données</h2>
+    <p>Les algorithmes d’intelligence artificielle apprennent en observant des données.
+       Après avoir observé beaucoup de données, ces algorithmes peuvent prédire s’il va faire beau ou s’il va pleuvoir,
+       s’il vaut mieux prendre le bus ou le train,
+       s’il faut regarder la série A ou la série B…</p>
+    <button onclick="show('screen6')">Je vois</button>
+  </div>
+
+  <!-- Écran 6 : observation plus large -->
+  <div id="screen6" class="card hidden">
+    <h2>Observation plus large</h2>
+    <p>Comme il est impossible de tout observer,
+       l'algorithme prend des décisions basées sur des données qui sont une représentation imparfaite de la réalité.
+       En règle générale, plus l'algorithme observe des données, meilleures seront ses prédictions.</p>
+    <p><strong>Continuez l’observation :</strong> cliquez sur 10 autres sphères.</p>
+    <button onclick="step6()">Observer</button>
+  </div>
+
+  <!-- Écran 7 : deuxième prédiction -->
+  <div id="screen7" class="card hidden">
+    <h2>Deuxième prédiction</h2>
+    <p>À nouveau, choisissez ce qui vous semble le plus probable :</p>
+    <div class="row">
+      <button class="choice" onclick="finalPredict('garcons')">Garçons</button>
+      <button class="choice" onclick="finalPredict('filles')">Filles</button>
+    </div>
+    <p id="finalmsg" class="tiny"></p>
+  </div>
+
+  <!-- Écran 8 : biais sociétal -->
+  <div id="screen8" class="card hidden">
+    <h2>Biais sociétal</h2>
+    <p>Nous avons la chance d’avoir plus de données.
+       Chaque personne affiche sa couleur préférée dans son profil de réseau social.
+       Vous êtes invités à dîner par une fille.
+       Est-ce mieux de lui offrir un vêtement vert ou un vêtement violet ?</p>
+    <div class="row">
+      <button class="choice" onclick="societal('vert')">Un vêtement vert</button>
+      <button class="choice" onclick="societal('violet')">Un vêtement violet</button>
+    </div>
+    <p id="socmsg" class="tiny"></p>
+  </div>
+
+  <!-- Écran 9 : conclusion -->
+  <div id="screen9" class="card hidden">
+    <h2>Conclusion</h2>
+    <p>Il est impossible de supprimer tous les biais !
+       Il faut donc être critique face aux résultats que nous donnent les algorithmes.</p>
+    <p><strong>Découvrez les biais de l’IA avec un jeu.</strong>
+       Une manière ludique de comprendre l’intelligence artificielle et les bulles de filtre.</p>
+  </div>
+
+</div>
+
+<script>
+// Construction de la population : 20 filles, 30 garçons
+const people = [];
+for(let i=0;i<20;i++) people.push({type:'f'});
+for(let i=0;i<30;i++) people.push({type:'g'});
+// Mélange aléatoire
+const order = people.sort(()=>Math.random()-0.5);
+
+let clickCount = 0;
+let revealCount = 0;
+
+const grid = document.getElementById('grid');
+
+function show(id){
+  document.querySelectorAll('.card').forEach(c=>c.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function renderGrid(){
+  grid.innerHTML='';
+  order.forEach((p,idx)=>{
+    const d = document.createElement('div');
+    d.className = 'sphere';
+    d.innerHTML = '?';
+    d.onclick = () => reveal(d, p);
+    grid.appendChild(d);
+  });
+}
+
+function reveal(el, p){
+  if(el.classList.contains('revealed')) return;
+  el.classList.add('revealed');
+  revealCount++;
+
+  if(p.type === 'g'){
+    el.innerHTML = '<div class="portrait male">\
+        👦<span class="tag"></span></div>';
+  } else {
+    el.innerHTML = '<div class="portrait female">\
+        👧<span class="tag"></span></div>';
+  }
+
+  if(revealCount === 2){
+    document.getElementById('msg2').textContent =
+      'Merci ! Nouvelle instruction : Maintenant, imaginez que VOUS êtes l\'algorithme de prédiction. Cliquez sur 8 autres sphères.';
+  }
+  if(revealCount === 10){
+    document.getElementById('msg2').textContent =
+      'C\'est fait !';
+  }
+}
+
+function step2(){
+  show('screen3');
+}
+
+function step3(){
+  show('screen4');
+}
+
+function predict(choice){
+  if(choice === 'garcons'){
+    document.getElementById('predmsg').textContent =
+      'Correct : il y a bien plus de garçons dans ce jeu.';
+    show('screen5');
+  } else {
+    document.getElementById('predmsg').textContent =
+      'Vous avez choisi les filles. Pourtant, à l’écran il y a plus de garçons. Recommencez.';
+  }
+}
+
+function step6(){
+  show('screen7');
+}
+
+function finalPredict(choice){
+  if(choice === 'filles'){
+    document.getElementById('finalmsg').textContent =
+      'Pour l’instant oui, plus on a d’observations, plus on peut espérer s’approcher de la réalité. Désormais, il y a plus de filles.';
+    show('screen8');
+  } else {
+    document.getElementById('finalmsg').textContent =
+      'Vous avez choisi les garçons. Pourtant, il y a plus de filles. Essayez encore.';
+  }
+}
+
+function societal(choice){
+  if(choice === 'violet'){
+    document.getElementById('socmsg').textContent =
+      'Aïe, aïe, aïe ! Cette fille fait partie d’une minorité qui déteste les vêtements violets ! C\'est le BIAIS SOCIÉTAL : les données reproduisent les biais et préjugés de notre société.';
+    show('screen9');
+  } else {
+    document.getElementById('socmsg').textContent =
+      'Mauvais choix : dans cette histoire, la couleur préférée attendue est le violet.';
+  }
+}
+
+renderGrid();
+</script>
+</body>
+</html>
